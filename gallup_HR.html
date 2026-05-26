@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест талантов — диагностика сильных сторон (HR)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+
+        .instruction {
+            background: #fff3e0;
+            border-left: 4px solid #ff9800;
+            padding: 20px;
+            margin: 20px 20px 0 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .instruction h3 {
+            color: #e67e22;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .instruction ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+        .instruction li {
+            margin-bottom: 8px;
+        }
+        .instruction .example {
+            background: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+            font-style: italic;
+            color: #555;
+            border-left: 3px solid #ff9800;
+        }
+
+        .user-form {
+            background: #f0f4ff;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 15px;
+            border: 1px solid #667eea;
+        }
+
+        .user-form h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .btn-start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .participants-list {
+            background: #f8f9fa;
+            margin: 20px;
+            padding: 15px;
+            border-radius: 15px;
+        }
+
+        .participants-list h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .participant-item {
+            padding: 10px;
+            margin: 8px 0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid #667eea;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .participant-item:hover {
+            background: #f0f4ff;
+            transform: translateX(5px);
+        }
+
+        .participant-name {
+            font-weight: 500;
+        }
+
+        .participant-date {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .delete-participant {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .delete-participant:hover {
+            background: #ff5252;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .question-area {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 25px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+        }
+
+        .option-radio {
+            margin-right: 15px;
+            margin-top: 2px;
+        }
+
+        .option-radio input {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .option-text {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.4;
+            color: #333;
+        }
+
+        .strength-section {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .strength-label {
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .strength-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .strength-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .strength-btn:hover {
+            border-color: #667eea;
+        }
+
+        .strength-btn.active {
+            background: #667eea;
+            border-color: #667eea;
+            color: white;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        .result-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+        }
+
+        .result-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .result-section {
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .result-label {
+            font-weight: bold;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .result-text {
+            line-height: 1.6;
+            color: #333;
+            font-size: 14px;
+        }
+
+        .career-card {
+            background: linear-gradient(135deg, #f0f4ff 0%, #e8eef9 100%);
+            border-left: 4px solid #764ba2;
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .career-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #764ba2;
+            margin-bottom: 10px;
+        }
+
+        .restart-btn {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+                margin: 0;
+            }
+            .container {
+                max-width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            .card {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            .header {
+                background: #667eea;
+                color: white;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            .btn, .nav-buttons, .restart-btn, .participants-list, .user-form, .instruction {
+                display: none !important;
+            }
+            .content {
+                padding: 20px;
+            }
+            .result-card, .career-card {
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 20px;
+            }
+            .option-text {
+                font-size: 13px;
+            }
+            .btn {
+                padding: 10px 20px;
+            }
+            .result-title {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <h1>🧠 Тест талантов</h1>
+                <p>Диагностическая модель на основе методологии Gallup</p>
+                <p style="font-size: 12px; margin-top: 10px;">⚠️ Это не официальный тест Gallup, а инструмент для осознания природных сильных сторон</p>
+            </div>
+
+            <div class="instruction">
+                <h3>📘 Как проходить диагностику</h3>
+                <ul>
+                    <li><strong>Выбирайте не то, что вы умеете, а то, что вам ближе по духу.</strong> Тест измеряет природные таланты, а не навыки.</li>
+                    <li><strong>Отвечайте быстро</strong> — первая реакция обычно самая честная.</li>
+                    <li><strong>Используйте два уровня уверенности:</strong> «Скорее» (лёгкий перевес) и «Однозначно» (вы узнали себя).</li>
+                    <li><strong>Не задумывайтесь о «правильных» ответах</strong> — их нет, есть только ваш уникальный профиль.</li>
+                    <li><strong>Можно вернуться к предыдущим вопросам</strong> с помощью кнопки «Назад».</li>
+                    <li><strong>После завершения вы сможете сохранить результаты</strong> (PDF или печать).</li>
+                </ul>
+                <div class="example">
+                    💡 Пример: если вы в компании часто берёте на себя инициативу, но иногда устаёте — выберите «скорее». Если это про вас всегда и везде — «однозначно».
+                </div>
+            </div>
+            
+            <div id="app"></div>
+        </div>
+    </div>
+
+    <script>
+        // ========== ОПИСАНИЯ ТЕМ (СОКРАЩЕНЫ ДО 2-3 СТРОК) ==========
+        const THEMES = {
+            "Стратег": { 
+                desc: "Вы видите скрытые закономерности и мысленно проигрываете сценарии, находя оптимальные пути там, где другие видят хаос. Ваш мозг автоматически фильтрует шум и выделяет рычаги влияния, экономя ресурсы команды.", 
+                situation: "Команда спорит о трёх стратегиях неделю, а вы за 15 минут находите лучший путь и предсказываете риски. Вас зовут на старт проектов и в кризисы, потому что вы создаёте карту местности там, где ещё нет дорог.", 
+                advice: "Ведите дневник стратегических прогнозов, ищите роли на этапе «чистого листа». Научитесь доносить инсайты коротко и иногда спрашивать: «Вам сейчас нужен полный анализ или просто решение?»", 
+                shadow: "Вы можете раздражаться на линейное мышление других и выглядеть пессимистом, предвидя риски. Учитесь дозировать анализ — не всем нужен полный прогноз." 
+            },
+            "Обучаемость": { 
+                desc: "Процесс узнавания нового — сам для вас источник энергии, вы втягиваетесь в темы как в захватывающий сериал. Вам не нужен внешний пинок — ваше любопытство работает автономно.", 
+                situation: "Пока коллеги стонут «опять всё менять», вы уже на третьем часу изучения мануала новой CRM и находите лайфхаки. Вас ставят на проекты с неизвестным результатом, потому что вы не боитесь признать «я разберусь».", 
+                advice: "Структурируйте обучение: из каждой темы выносите один прикладной навык. Создайте личный портфель знаний и разрешите себе не доучивать то, что потеряло актуальность.", 
+                shadow: "Вы можете влюбиться в новую тему, а когда наступает рутина — потерять интерес и бросить проект. Коллеги могут видеть в вас «вечного студента», который мало доделывает." 
+            },
+            "Развитие других": { 
+                desc: "Вы видите в людях не то, какие они есть, а то, кем они могут стать, замечая микро-успехи. Люди сами тянутся к вам, потому что чувствуют: вы не оцениваете, вы выращиваете.", 
+                situation: "Вы — лучший онбордер для новичков: через месяц стажёр под вашим крылом работает как мидл. Вас ставят наставником сложных сотрудников, потому что вы умеете «размотать» их сопротивление.", 
+                advice: "Задавайте вопросы вместо готовых ответов, отличайте «помощь» от «спасения». Инвестируйте время только в тех, кто сам хочет расти.", 
+                shadow: "Вы можете выгореть, вкладываясь в людей больше, чем они готовы вкладываться в себя. Установите правило: три попытки — дальше ответственность переходит к человеку." 
+            },
+            "Аналитик": { 
+                desc: "Ваш ум работает как высокоточный измерительный прибор — вам нужны данные, логические цепочки, причины и следствия. В хаосе вы становитесь самым спокойным, потому что ищете факты.", 
+                situation: "В кризисной ситуации, когда все мечутся, вы говорите: «Давайте соберём данные». Вас зовут в проекты, где «что-то пошло не так», чтобы вы нашли точку отказа.", 
+                advice: "Развивайте «мягкий вход» в аналитику — перед фактами признавайте эмоции. Учитесь правилу 70%: если уверены на 70% — действуйте.", 
+                shadow: "Вы можете тормозить решения, требуя ещё данных. Вас могут считать холодным и бесчувственным. Учитесь говорить: «Сейчас данных достаточно для первого шага»." 
+            },
+            "Ответственность": { 
+                desc: "У вас есть внутренний кодекс, работающий жёстче внешнего контроля — если сказали «да», это контракт с собой. Вас не нужно проверять, вы сами себе строгий менеджер.", 
+                situation: "Проект «висит», никто не хочет брать ответственность — вы автоматически встаёте на место «держателя». Вас ставят на долгосрочные проекты, потому что вы не бросите.", 
+                advice: "Научитесь говорить «нет» до того, как сказали «да». Ведите реестр обязательств, делегируйте и доверяйте. Не все обязательства нужно выполнять первыми.", 
+                shadow: "Вы можете выгореть от гиперответственности за всё вокруг, молча обижаясь на легкомысленных коллег. Повторяйте: «Я отвечаю за свою зону»." 
+            },
+            "Адаптивность": { 
+                desc: "Вы живёте в изменениях как рыба в воде — жёсткие планы вызывают тоску, а экстренный поворот задачи — прилив энергии. Вы легко отпускаете то, что потеряло актуальность.", 
+                situation: "Вас ставят на проекты с неопределёнными требованиями, потому что вы не сломаетесь. Когда заказчик меняет ТЗ, вы переделываете без нытья.", 
+                advice: "Держите 1-2 неизменных якоря в работе. Сообщайте окружающим о смене приоритетов — для вас это очевидно, для других стресс.", 
+                shadow: "Вы можете казаться несобранным и ненадёжным. Без дисциплины ваша гибкость превращается в хаос. Держите утренний план на 3 главных задачи." 
+            },
+            "Эмпатия": { 
+                desc: "Вы чувствуете эмоциональное поле комнаты быстрее, чем кто-либо успевает сказать слово. Люди раскрываются рядом с вами, потому что чувствуют: вы не осудите, вы поймёте.", 
+                situation: "Конфликт в команде — вас зовут миротворцем. Вы чувствуете, что тихий сотрудник выгорел, хотя он говорит «всё нормально».", 
+                advice: "Разделяйте свои и чужие эмоции — используйте метафору «накинуть плащ». После сложных разговоров делайте паузу 5 минут.", 
+                shadow: "Высокий риск эмоционального выгорания — вы впитываете боль и тревогу других как губка. Вы не обязаны решать чужие эмоции, вы можете просто свидетельствовать." 
+            },
+            "Конкуренция": { 
+                desc: "Сравнение — ваш двигатель: вы замечаете, кто лучше, кто быстрее, и это не зависть, а топливо. Без измеримой цели и соперника вам становится скучно.", 
+                situation: "Вы видите KPI коллеги и тихо заводитесь: «На этой неделе сделаю больше». Вы поднимаете планку для всей команды, просто потому что вам нужно быть лучшим.", 
+                advice: "Направляйте конкуренцию внутрь: сравнивайте себя с собой вчерашним. Соревнуйтесь в полезном — кто больше помог коллегам.", 
+                shadow: "Вы можете разрушать командный дух, ваше «я лучше» звучит как «вы хуже». Добавляйте к соревнованию кооперацию: «Давайте вместе побьём рекорд»." 
+            }
+        };
+
+        const QUESTIONS = [
+            ["Мне важно понимать логику процессов и находить закономерности в данных.", "Мне нравится интуитивно «видеть» картину целиком и быстро находить кратчайший путь."],
+            ["Я часто мыслю «вглубь»: мне интересно сфокусироваться на одной сложной теме, изучить её досконально.", "Я часто мыслю «вширь»: быстро переключаюсь между разными идеями и темами."],
+            ["В группе я беру на себя роль инициатора: могу повести людей за собой.", "В группе я выступаю ролью «клея»: чувствую настроение команды, сглаживаю конфликты."],
+            ["Мне нравится выступать, писать или рассказывать истории. Я заряжаюсь от публичности.", "Мне комфортнее работать «в тишине»: письмо, анализ, конкретные действия без публичности."],
+            ["Я испытываю дискомфорт, если не довожу начатое до конца. Держу слово любой ценой.", "Я легко адаптируюсь: могу оставить старую задачу ради новой, не испытывая стресса."],
+            ["Я предпочитаю работать с четкими правилами, структурой и временными рамками.", "Я лучше работаю в режиме «свободного полета». Жесткие рамки меня угнетают."],
+            ["Я лучше всего чувствую себя, когда помогаю другим расти. Я вижу их прогресс.", "Я лучше всего чувствую себя, когда я глубоко связан с командой или близкими. Важна лояльность."],
+            ["Я автоматически чувствую эмоции других. Могу «прочитать» человека за 5 минут.", "Я фокусируюсь на сути задач и целях. Эмоции часто ускользают, если не влияют на план."],
+            ["В кризисе я чувствую прилив адреналина. Лучше всего действую быстро.", "В кризисе я становлюсь спокойным и расчетливым. Сначала собираю данные, потом действую."],
+            ["Меня мотивирует конкуренция. Хочу быть лучшим, обогнать других.", "Меня мотивирует мастерство. Мне важно делать работу хорошо ради самого процесса."],
+            ["Я часто замечаю недостатки и то, что «сломано». Вижу, что нужно исправить.", "Я часто замечаю потенциал и сильные стороны. Люблю усиливать то, что работает."],
+            ["Мне важно мое будущее. У меня всегда есть четкая цель (или несколько).", "Я живу в моменте. Получаю энергию от текущих задач, будущее слишком абстрактно."]
+        ];
+
+        const SCORING_RULES = {
+            1: { "A": [["Стратег", 2], ["Аналитик", 1]], "A_strong": [["Стратег", 3], ["Аналитик", 2]], "B": [["Стратег", 2], ["Обучаемость", 1]], "B_strong": [["Стратег", 3], ["Обучаемость", 2]] },
+            2: { "A": [["Аналитик", 2], ["Ответственность", 1]], "A_strong": [["Аналитик", 3], ["Ответственность", 2]], "B": [["Обучаемость", 2], ["Стратег", 1]], "B_strong": [["Обучаемость", 3], ["Стратег", 2]] },
+            3: { "A": [["Ответственность", 2], ["Развитие других", 1]], "A_strong": [["Ответственность", 3], ["Развитие других", 2]], "B": [["Эмпатия", 2], ["Развитие других", 1]], "B_strong": [["Эмпатия", 3], ["Развитие других", 2]] },
+            4: { "A": [["Развитие других", 2], ["Конкуренция", 1]], "A_strong": [["Развитие других", 3], ["Конкуренция", 2]], "B": [["Аналитик", 2], ["Обучаемость", 1]], "B_strong": [["Аналитик", 3], ["Обучаемость", 2]] },
+            5: { "A": [["Ответственность", 3]], "A_strong": [["Ответственность", 4]], "B": [["Адаптивность", 2], ["Обучаемость", 1]], "B_strong": [["Адаптивность", 3], ["Обучаемость", 2]] },
+            6: { "A": [["Ответственность", 2], ["Аналитик", 1]], "A_strong": [["Ответственность", 3], ["Аналитик", 2]], "B": [["Адаптивность", 2], ["Обучаемость", 1]], "B_strong": [["Адаптивность", 3], ["Обучаемость", 2]] },
+            7: { "A": [["Развитие других", 3]], "A_strong": [["Развитие других", 4]], "B": [["Эмпатия", 2], ["Ответственность", 1]], "B_strong": [["Эмпатия", 3], ["Ответственность", 2]] },
+            8: { "A": [["Эмпатия", 3]], "A_strong": [["Эмпатия", 4]], "B": [["Аналитик", 2], ["Стратег", 1]], "B_strong": [["Аналитик", 3], ["Стратег", 2]] },
+            9: { "A": [["Конкуренция", 2], ["Адаптивность", 1]], "A_strong": [["Конкуренция", 3], ["Адаптивность", 2]], "B": [["Аналитик", 2], ["Стратег", 1]], "B_strong": [["Аналитик", 3], ["Стратег", 2]] },
+            10: { "A": [["Конкуренция", 3]], "A_strong": [["Конкуренция", 4]], "B": [["Обучаемость", 2], ["Развитие других", 1]], "B_strong": [["Обучаемость", 3], ["Развитие других", 2]] },
+            11: { "A": [["Аналитик", 2], ["Ответственность", 1]], "A_strong": [["Аналитик", 3], ["Ответственность", 2]], "B": [["Развитие других", 2], ["Эмпатия", 1]], "B_strong": [["Развитие других", 3], ["Эмпатия", 2]] },
+            12: { "A": [["Стратег", 2], ["Ответственность", 1]], "A_strong": [["Стратег", 3], ["Ответственность", 2]], "B": [["Адаптивность", 2], ["Обучаемость", 1]], "B_strong": [["Адаптивность", 3], ["Обучаемость", 2]] }
+        };
+
+        let participants = JSON.parse(localStorage.getItem('gallup_participants') || '[]');
+        let currentParticipant = null;
+        let answers = {};
+        let currentQuestion = 0;
+        let currentResults = null;
+        let hasPublicity = false; // будет определено при расчёте
+
+        function saveParticipants() {
+            localStorage.setItem('gallup_participants', JSON.stringify(participants));
+        }
+
+        function render() {
+            const app = document.getElementById('app');
+            if (currentParticipant === null) {
+                renderWelcome(app);
+            } else if (currentQuestion < QUESTIONS.length) {
+                renderQuestion(app);
+            } else {
+                renderResults(app);
+            }
+        }
+
+        function renderWelcome(container) {
+            const historyHtml = participants.length > 0 ? `
+                <div class="participants-list">
+                    <h3>📋 Ранее проходили тест:</h3>
+                    ${participants.map(p => `
+                        <div class="participant-item" data-id="${p.id}">
+                            <div>
+                                <div class="participant-name">${escapeHtml(p.name)}</div>
+                                <div class="participant-date">${p.date}</div>
+                            </div>
+                            <button class="delete-participant" data-id="${p.id}">🗑 Удалить</button>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : '<div class="participants-list"><h3>📋 История пока пуста</h3><p>Пройдите тест, чтобы сохранить результаты</p></div>';
+
+            container.innerHTML = `
+                <div class="user-form">
+                    <h3>👤 Введите ваши данные</h3>
+                    <div class="form-group">
+                        <label>Фамилия, Имя, Отчество:</label>
+                        <input type="text" id="fullname" placeholder="Иванов Иван Иванович">
+                    </div>
+                    <button class="btn-start" id="startBtn">Начать диагностику →</button>
+                </div>
+                ${historyHtml}
+            `;
+
+            document.getElementById('startBtn').addEventListener('click', () => {
+                const name = document.getElementById('fullname').value.trim();
+                if (!name) {
+                    alert('Пожалуйста, введите ФИО');
+                    return;
+                }
+                currentParticipant = { id: Date.now(), name: name, date: new Date().toLocaleString() };
+                answers = {};
+                currentQuestion = 0;
+                currentResults = null;
+                render();
+            });
+
+            document.querySelectorAll('.participant-item').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('delete-participant')) return;
+                    const id = parseInt(el.dataset.id);
+                    const p = participants.find(p => p.id === id);
+                    if (p && p.results) {
+                        currentParticipant = p;
+                        currentResults = p.results;
+                        currentQuestion = QUESTIONS.length;
+                        render();
+                    } else if (p) {
+                        alert('У этого участника нет сохранённых результатов. Пройдите тест заново.');
+                    }
+                });
+            });
+
+            document.querySelectorAll('.delete-participant').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = parseInt(btn.dataset.id);
+                    participants = participants.filter(p => p.id !== id);
+                    saveParticipants();
+                    render();
+                });
+            });
+        }
+
+        function renderQuestion(container) {
+            const q = QUESTIONS[currentQuestion];
+            const saved = answers[currentQuestion];
+            const selectedChoice = saved ? saved.choice : null;
+            const selectedStrength = saved ? saved.strength : 1;
+            const progress = ((currentQuestion + 1) / QUESTIONS.length) * 100;
+
+            container.innerHTML = `
+                <div class="content">
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${progress}%"></div>
+                    </div>
+                    <div class="question-area">
+                        <div class="question-number">Вопрос ${currentQuestion + 1} из ${QUESTIONS.length}</div>
+                        <div class="question-text">Выберите ближайшее утверждение:</div>
+                        <div class="options">
+                            <div class="option ${selectedChoice === 'A' ? 'selected' : ''}" data-choice="A">
+                                <div class="option-radio">
+                                    <input type="radio" name="choice" value="A" ${selectedChoice === 'A' ? 'checked' : ''}>
+                                </div>
+                                <div class="option-text"><strong>А)</strong> ${escapeHtml(q[0])}</div>
+                            </div>
+                            <div class="option ${selectedChoice === 'B' ? 'selected' : ''}" data-choice="B">
+                                <div class="option-radio">
+                                    <input type="radio" name="choice" value="B" ${selectedChoice === 'B' ? 'checked' : ''}>
+                                </div>
+                                <div class="option-text"><strong>Б)</strong> ${escapeHtml(q[1])}</div>
+                            </div>
+                        </div>
+                        <div class="strength-section">
+                            <div class="strength-label">Насколько этот выбор вам близок?</div>
+                            <div class="strength-buttons">
+                                <div class="strength-btn ${selectedStrength === 1 ? 'active' : ''}" data-strength="1">Скорее</div>
+                                <div class="strength-btn ${selectedStrength === 2 ? 'active' : ''}" data-strength="2">Однозначно</div>
+                            </div>
+                        </div>
+                        <div class="nav-buttons">
+                            <button class="btn btn-secondary" ${currentQuestion === 0 ? 'disabled' : ''} id="prevBtn">← Назад</button>
+                            <button class="btn btn-primary" id="nextBtn">${currentQuestion === QUESTIONS.length - 1 ? 'Получить результат' : 'Далее →'}</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.querySelectorAll('.option').forEach(opt => {
+                opt.addEventListener('click', (e) => {
+                    const choice = opt.dataset.choice;
+                    document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+                    opt.classList.add('selected');
+                    const radio = opt.querySelector('input[type="radio"]');
+                    if (radio) radio.checked = true;
+                    saveCurrentAnswer(choice, null);
+                });
+                const radio = opt.querySelector('input[type="radio"]');
+                if (radio) {
+                    radio.addEventListener('change', (e) => {
+                        if (e.target.checked) {
+                            document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+                            opt.classList.add('selected');
+                            saveCurrentAnswer(e.target.value, null);
+                        }
+                    });
+                }
+            });
+
+            document.querySelectorAll('.strength-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const strength = parseInt(btn.dataset.strength);
+                    document.querySelectorAll('.strength-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    saveCurrentAnswer(null, strength);
+                });
+            });
+
+            document.getElementById('prevBtn').addEventListener('click', () => {
+                if (currentQuestion > 0) {
+                    currentQuestion--;
+                    render();
+                }
+            });
+
+            document.getElementById('nextBtn').addEventListener('click', () => {
+                const current = answers[currentQuestion];
+                if (!current || !current.choice) {
+                    alert('Пожалуйста, выберите одно из утверждений.');
+                    return;
+                }
+                if (currentQuestion === QUESTIONS.length - 1) {
+                    currentQuestion++;
+                    render();
+                } else {
+                    currentQuestion++;
+                    render();
+                }
+            });
+        }
+
+        function saveCurrentAnswer(choice, strength) {
+            const current = answers[currentQuestion] || { choice: null, strength: 1 };
+            if (choice !== null) current.choice = choice;
+            if (strength !== null) current.strength = strength;
+            answers[currentQuestion] = current;
+        }
+
+        function calculateResults() {
+            const scores = { "Стратег": 0, "Обучаемость": 0, "Развитие других": 0, "Аналитик": 0, "Ответственность": 0, "Адаптивность": 0, "Эмпатия": 0, "Конкуренция": 0 };
+            for (let qIdx in answers) {
+                const answer = answers[qIdx];
+                if (!answer || !answer.choice) continue;
+                const qNum = parseInt(qIdx) + 1;
+                const ruleKey = `${answer.choice}_${answer.strength === 2 ? 'strong' : 'normal'}`;
+                const rules = SCORING_RULES[qNum];
+                if (rules && rules[ruleKey]) {
+                    rules[ruleKey].forEach(([theme, points]) => { if (scores[theme] !== undefined) scores[theme] += points; });
+                }
+            }
+            const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+            return sorted.slice(0, 5).filter(([_, score]) => score > 0).map(([theme]) => theme);
+        }
+
+        // Функция для определения, есть ли у пользователя талант к публичности
+        function hasPublicityTalent() {
+            // Проверяем вопрос 4 (публичность vs тишина)
+            const q4 = answers[3]; // вопрос 4 (индекс 3)
+            if (q4 && q4.choice === 'A') {
+                return true;
+            }
+            // Проверяем, есть ли в топе Конкуренция
+            const top5 = currentResults || calculateResults();
+            if (top5.includes("Конкуренция")) {
+                return true;
+            }
+            return false;
+        }
+
+        // СКОРРЕКТИРОВАННЫЕ HR-РЕКОМЕНДАЦИИ с учётом публичности для тренерских ролей
+        function getCareerRecommendations(top5) {
+            const recs = [];
+            const hasPublic = hasPublicityTalent();
+            
+            // Направление 1: HR-партнёр / HR BP
+            if (top5.includes("Эмпатия") && top5.includes("Развитие других")) {
+                recs.push({
+                    title: "HR-партнёр (HR Business Partner)",
+                    desc: "Эта роль требует одновременно глубокого понимания людей (Эмпатия) и желания помогать им расти (Развитие других). Вы будете главным связующим звеном между бизнесом и сотрудниками: помогать руководителям выстраивать команды, участвовать в стратегических сессиях, разрешать конфликты и создавать среду, где люди раскрывают потенциал. Ваша суперсила — чувствовать, где назревает проблема, и мягко направлять, а не продавливать. Это идеальная роль для тех, кто хочет влиять на культуру компании, но не через жёсткие KPI, а через доверие и рост."
+                });
+            } else if (top5.includes("Эмпатия")) {
+                recs.push({
+                    title: "HR-партнёр (HR Business Partner)",
+                    desc: "Ваша ведущая Эмпатия позволяет вам чувствовать настроение команды и предвидеть конфликты. В роли HR BP вы станете тем человеком, к кому сотрудники идут с трудностями, а руководители — за советом. Вы сможете выстраивать доверительные отношения на всех уровнях, что критически важно для удержания талантов. Даже без сильного таланта «Развитие других» вы будете эффективны в роли «человека-посредника», который слышит обе стороны и помогает находить баланс."
+                });
+            }
+            
+            // Направление 2: Специалист по кадровому делопроизводству / HR-администратор
+            if (top5.includes("Аналитик") && top5.includes("Ответственность")) {
+                recs.push({
+                    title: "Специалист по кадровому делопроизводству / HR-администратор",
+                    desc: "Кадровое делопроизводство — это мир цифр, дат, приказов и чек-листов. Ваш талант Аналитика позволяет вам безошибочно находить нестыковки в документах и выстраивать логичные процессы. Ответственность гарантирует, что ни один срок не будет пропущен, а все отчёты сданы вовремя. В этой роли вы будете отвечать за полный цикл документации: от оформления приёма до увольнения, ведение воинского учёта, подготовку отчётов в фонды. Ошибки в кадровом учёте стоят компаниям штрафов — ваша точность и надёжность сделают вас незаменимым сотрудником."
+                });
+            } else if (top5.includes("Аналитик")) {
+                recs.push({
+                    title: "Специалист по кадровому делопроизводству / HR-администратор",
+                    desc: "Ваш талант Аналитика — главный козырь в кадровом учёте. Вы будете с лёгкостью разбираться в сложной структуре приказов, проверять данные на ошибки и выстраивать понятные системы хранения документов. Даже если у вас не максимальная Ответственность, ваше внимание к деталям и любовь к порядку позволят вести документацию безупречно. Работодатели ценят таких специалистов за снижение рисков при проверках."
+                });
+            } else if (top5.includes("Ответственность")) {
+                recs.push({
+                    title: "Специалист по кадровому делопроизводству / HR-администратор",
+                    desc: "Ваша Ответственность — идеальный фундамент для кадрового учёта. Вы из тех, кто доводит дело до конца и не пропускает дедлайны. В кадровой работе это критически важно: вовремя подписанный приказ, правильно оформленная трудовая книжка, сданный отчёт. Вы станете тем «надёжным тылом», на который полагается весь HR-отдел. Даже если аналитика не ваша сильная сторона, ваша педантичность и внутренний кодекс сделают вас лучшим администратором."
+                });
+            }
+            
+            // Направление 3: Руководитель отдела обучения и развития (T&D) / Корпоративный тренер
+            // ТЕПЕРЬ С УЧЁТОМ ПУБЛИЧНОСТИ!
+            if ((top5.includes("Развитие других") || top5.includes("Обучаемость")) && hasPublic) {
+                if (top5.includes("Развитие других") && top5.includes("Обучаемость")) {
+                    recs.push({
+                        title: "Руководитель отдела обучения и развития (T&D) / Корпоративный тренер",
+                        desc: "Это ваша идеальная ниша. Вы одновременно умеете учиться сами (Обучаемость), растить других (Развитие других) и — что критически важно для тренера — не боитесь публичности и умеете вести за собой (ваш профиль показывает склонность к выступлениям и лидерству). В этой роли вы будете: выявлять потребности в обучении, разрабатывать или закупать курсы, проводить тренинги, выступать перед аудиторией, увлекать сотрудников за собой. Ваши сотрудники будут тянуться к вам, потому что вы не просто «читаете лекции», а искренне верите в их рост и заряжаете энергией."
+                    });
+                } else if (top5.includes("Развитие других")) {
+                    recs.push({
+                        title: "Руководитель отдела обучения и развития (T&D) / Корпоративный тренер",
+                        desc: "Ваш главный дар — видеть потенциал в людях и помогать им раскрываться. В обучении и развитии персонала это бесценно. Плюс вы обладаете талантом к публичности и лидерству — а значит, вам не страшно выступать перед группой, вести тренинги и вдохновлять сотрудников. Вы сможете создавать программы наставничества, проводить адаптацию новичков, организовывать внутренние школы. Компании нужны именно такие тренеры, которые умеют и зажечь, и вырастить."
+                    });
+                } else if (top5.includes("Обучаемость")) {
+                    recs.push({
+                        title: "Руководитель отдела обучения и развития (T&D) / Корпоративный тренер",
+                        desc: "Ваша страсть к новым знаниям — идеальный двигатель для T&D-сферы. А ваш талант к публичности и лидерству позволяет вам не просто знать, но и увлекать за собой аудиторию. Вы будете в курсе всех трендов в обучении, легко освоите новые форматы (микрообучение, геймификация, VR-тренажёры) и сможете проводить яркие, запоминающиеся тренинги. Ваша любознательность в связке с умением выступать сделает вас лучшим корпоративным тренером."
+                    });
+                }
+            } else if ((top5.includes("Развитие других") || top5.includes("Обучаемость")) && !hasPublic) {
+                // Если есть желание развивать или учиться, но нет публичности — предлагаем роль методолога (без выступлений)
+                recs.push({
+                    title: "Методолог обучения / Разработчик учебных материалов",
+                    desc: "У вас есть талант к развитию других или к обучению, но публичность — не ваша сильная сторона. Это не проблема! Вы можете быть блестящим методологом: разрабатывать программы обучения, писать сценарии тренингов, создавать электронные курсы, готовить материалы для тренеров. Вы будете работать «за кулисами», создавая контент, который меняет людей, но без необходимости выходить на сцену. Это востребованная и высокооплачиваемая роль в корпоративных университетах и edtech-компаниях."
+                });
+            }
+            
+            // Если не сработало ни одно условие — базовые HR-роли
+            if (recs.length < 3) {
+                const baseRecs = [
+                    { title: "HR-менеджер общего профиля", desc: "Универсальный специалист, который закрывает широкий спектр задач: от подбора и адаптации до кадрового учёта и внутренних коммуникаций. Ваш профиль (даже без ярко выраженных доминант) показывает, что вы способны гибко переключаться между разными HR-функциями. Вы станете «золотой серединой» в небольшой компании или на стартапе, где нужен человек на всё." },
+                    { title: "Специалист по подбору персонала (рекрутер)", desc: "Рекрутинг требует и аналитики (чтобы читать резюме и оценивать рынок), и эмпатии (чтобы понимать мотивы кандидатов), и ответственности (чтобы закрывать вакансии в срок). Ваш профиль даёт вам все эти качества в сбалансированном виде. Вы сможете находить не просто «галочку», а человека, который впишется в культуру компании." },
+                    { title: "Специалист по внутренним коммуникациям и корпоративной культуре", desc: "Эта роль требует чувствовать настроение сотрудников (Эмпатия), доносить информацию понятно и вдохновляюще, а также создавать мероприятия и традиции. Ваш профиль показывает, что вы можете быть тем «человеком-оркестром», который объединяет команду и делает работу местом, куда хочется приходить." }
+                ];
+                for (let i = 0; i < baseRecs.length && recs.length < 3; i++) {
+                    if (!recs.some(r => r.title === baseRecs[i].title)) {
+                        recs.push(baseRecs[i]);
+                    }
+                }
+            }
+            
+            return recs.slice(0, 3);
+        }
+
+        function escapeHtml(str) {
+            return str.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        function printResults() {
+            window.print();
+        }
+
+        function renderResults(container) {
+            const top5 = currentResults || calculateResults();
+            currentResults = top5;
+            const careerRecs = getCareerRecommendations(top5);
+            
+            if (currentParticipant && !participants.find(p => p.id === currentParticipant.id)) {
+                participants.push({ ...currentParticipant, results: top5, answers: answers });
+                saveParticipants();
+            }
+
+            let resultsHtml = `
+                <div class="content" id="printableContent">
+                    <div style="text-align: center; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px solid #667eea;">
+                        <h1 style="color: #667eea; margin-bottom: 10px;">🧠 Тест талантов</h1>
+                        <p><strong>Участник:</strong> ${escapeHtml(currentParticipant?.name || 'Гость')}</p>
+                        <p><strong>Дата:</strong> ${new Date().toLocaleString()}</p>
+                        <p style="font-size: 12px; margin-top: 10px;">Диагностическая модель на основе методологии Gallup</p>
+                    </div>
+                    <h2 style="margin-bottom: 20px; color: #667eea;">📊 Ваш профиль сильных сторон</h2>
+            `;
+
+            top5.forEach((theme, idx) => {
+                const info = THEMES[theme];
+                resultsHtml += `
+                    <div class="result-card">
+                        <div class="result-title">${idx + 1}. ${theme}</div>
+                        <div class="result-section"><div class="result-label">📌 Описание:</div><div class="result-text">${info.desc}</div></div>
+                        <div class="result-section"><div class="result-label">💼 Типичная рабочая ситуация:</div><div class="result-text">${info.situation}</div></div>
+                        <div class="result-section"><div class="result-label">⚡ Совет по развитию:</div><div class="result-text">${info.advice}</div></div>
+                        <div class="result-section"><div class="result-label">🌑 «Тень» (как может мешать):</div><div class="result-text">${info.shadow}</div></div>
+                    </div>
+                `;
+            });
+
+            resultsHtml += `<h2 style="margin: 30px 0 20px 0; color: #764ba2;">🎯 Рекомендованные направления карьеры в HR и кадровом делопроизводстве</h2>`;
+            
+            careerRecs.forEach((rec, idx) => {
+                resultsHtml += `
+                    <div class="career-card">
+                        <div class="career-title">${idx + 1}. ${rec.title}</div>
+                        <div class="result-text">${rec.desc}</div>
+                    </div>
+                `;
+            });
+            
+            resultsHtml += `<div style="margin-top: 20px; padding: 12px; background: #f0f0f0; border-radius: 10px; font-size: 12px; color: #555;">
+                        ⚠️ Примечание: это диагностическая модель на основе методологии Gallup, а не официальный тест CliftonStrengths. Результаты основаны на ваших ответах и помогают осознать природные тенденции.
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-top: 30px;">
+                        <button class="btn btn-primary restart-btn" id="restartBtn" style="flex: 1;">🔄 Пройти заново</button>
+                        <button class="btn btn-success restart-btn" id="printBtn" style="flex: 1;">🖨 Сохранить результаты</button>
+                    </div>
+                </div>`;
+            
+            container.innerHTML = resultsHtml;
+            
+            document.getElementById('restartBtn').addEventListener('click', () => {
+                currentParticipant = null;
+                answers = {};
+                currentQuestion = 0;
+                currentResults = null;
+                render();
+            });
+            
+            document.getElementById('printBtn').addEventListener('click', () => {
+                printResults();
+            });
+        }
+
+        render();
+    </script>
+</body>
+</html>
